@@ -19,17 +19,18 @@ public static class ItemEndpoints {
 
     var group = app.MapGroup("api/v1/items");
 
-    group.MapGet("/", (ItemStoreContext dbContext) => dbContext.Items
+    group.MapGet("/", async (ItemStoreContext dbContext) => await dbContext.Items
       .Include(item => item.Category)
       .Select(item => item.ToItemSummaryContract())
-      .AsNoTracking());
+      .AsNoTracking()
+      .ToListAsync());
 
-    group.MapGet("/{id}", (string id, ItemStoreContext dbContext) => {
-      Item ? foundItems = dbContext.Items.Find(id);
+    group.MapGet("/{id}", async (string id, ItemStoreContext dbContext) =>  {
+      Item? foundItems = await dbContext.Items.FindAsync(id);
       return foundItems is null ? Results.NotFound() : Results.Ok(foundItems.ToItemDetailsContract());
     }).WithName(itemEndpointName);
 
-    group.MapPost("/", (CreateItem newItem, ItemStoreContext dbContext) => {
+    group.MapPost("/", async (CreateItem newItem, ItemStoreContext dbContext) => {
 
       var foundCategory = dbContext.Categories.Find(newItem.CategoryId);
       if (foundCategory == null) {
@@ -39,7 +40,7 @@ public static class ItemEndpoints {
       Item item = newItem.ToEntity();
 
       dbContext.Add(item);
-      dbContext.SaveChanges();
+      await dbContext.SaveChangesAsync();
 
       
       return Results.CreatedAtRoute(
@@ -49,9 +50,9 @@ public static class ItemEndpoints {
 
     });
 
-    group.MapPut("/{id}", (string id, UpdateItem updateItem, ItemStoreContext dbContext) => {
+    group.MapPut("/{id}", async (string id, UpdateItem updateItem, ItemStoreContext dbContext) => {
       
-      var existingItem = dbContext.Items.Find(id);
+      var existingItem = await dbContext.Items.FindAsync(id);
 
       if (existingItem is null) { return Results.NotFound(); }
 
@@ -59,15 +60,15 @@ public static class ItemEndpoints {
         .CurrentValues
         .SetValues(updateItem.ToEntity(id));
       
-      dbContext.SaveChanges();
+      await dbContext.SaveChangesAsync();
 
       return Results.NoContent();  
     });
 
-    group.MapDelete("/{id}", (string id, ItemStoreContext dbContext) => {
-      var itemToDelete = dbContext.Items.
+    group.MapDelete("/{id}", async (string id, ItemStoreContext dbContext) => {
+      var itemToDelete = await dbContext.Items.
         Include(i => i.Category).
-        FirstOrDefault(item => item.Id == id);
+        FirstOrDefaultAsync(item => item.Id == id);
       
       if (itemToDelete == null) {
           return Results.NotFound();

@@ -1,16 +1,22 @@
 using Server.api.Data;
 using Server.api.Endpoints;
 
-var builder = WebApplication.CreateBuilder(args);
+internal class Program
+{
+    private static async Task Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
 
-var connString = builder.Configuration.GetConnectionString("ItemStore");
-builder.Services.AddSqlite<ItemStoreContext>(connString);
+        var connString = builder.Configuration.GetConnectionString("ItemStore");
+        builder.Services.AddSqlite<ItemStoreContext>(connString);
 
-var app = builder.Build();
+        var app = builder.Build();
 
-app.MapItemEndpoints();
-app.MigrateDb();
+        app.MapItemEndpoints();
+        await app.MigrateDb();
 
-app.MapGet("/", () => "Hello World!");
+        app.MapGet("/", () => "Hello World!");
 
-app.Run();
+        app.Run();
+    }
+}
