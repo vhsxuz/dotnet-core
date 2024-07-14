@@ -4,6 +4,6 @@ namespace Server.api.Contract;
 
 public record class CreateItem ( 
   [Required] [StringLength(50)]string Name, 
-  [Required] [StringLength(20)] string Category, 
+  string CategoryId, 
   [Range(1, 100)]decimal Price, 
   DateTime DateAdd);

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Server.api.Data;
 
@@ -10,9 +11,11 @@ using Server.api.Data;
 namespace Server.api.Data.Migrations
 {
     [DbContext(typeof(ItemStoreContext))]
-    partial class ItemStoreContextModelSnapshot : ModelSnapshot
+    [Migration("20240714063727_SeedDatabase")]
+    partial class SeedDatabase
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.0-preview.6.24327.4");

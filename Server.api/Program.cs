@@ -10,6 +10,7 @@ var app = builder.Build();
 
 app.MapItemEndpoints();
 app.MigrateDb();
+
 app.MapGet("/", () => "Hello World!");
 
 app.Run();
