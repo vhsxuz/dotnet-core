@@ -1,8 +1,8 @@
 ﻿namespace Server.api.Contract;
 
-public record class Item (
+public record class ItemDetails (
   string Id, 
   string Name, 
-  string Category, 
+  string CategoryId, 
   decimal Price, 
   DateTime DateAdd);
